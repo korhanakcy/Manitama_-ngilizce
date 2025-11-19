@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English with AI - For My Love</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a1a;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Video Alanı (Temsili Görüntülü Görüşme Arayüzü) */
+        .video-container {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle, #2c3e50 0%, #000000 100%);
+        }
+
+        /* AI Avatarı (Temsili) */
+        .ai-avatar {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background-image: url('https://img.freepik.com/free-photo/portrait-young-businesswoman-holding-eyeglasses-hand-against-gray-background_23-2148029483.jpg'); /* Buraya istediğin bir öğretmen resmi koyabilirsin */
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 0 50px rgba(100, 180, 255, 0.3);
+            transition: all 0.3s ease;
+            animation: breathe 4s infinite ease-in-out;
+        }
+        
+        /* Konuşurken Avatar Efekti */
+        .ai-speaking {
+            box-shadow: 0 0 80px rgba(100, 255, 150, 0.6);
+            transform: scale(1.1);
+        }
+
+        /* Kullanıcı Kamerası (Küçük kutu) */
+        .user-camera {
+            position: absolute;
+            bottom: 120px;
+            right: 20px;
+            width: 120px;
+            height: 160px;
+            background-color: #333;
+            border-radius: 12px;
+            border: 2px solid rgba(255,255,255,0.2);
+            overflow: hidden;
+            z-index: 10;
+        }
+        
+        .user-camera video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Kontrol Paneli */
+        .controls {
+            height: 100px;
+            background-color: #111;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            border-top: 1px solid #333;
+        }
+
+        .btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            transition: 0.2s;
+        }
+
+        .btn-mic {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .btn-mic.active {
+            background-color: #2ecc71;
+            animation: pulse 1.5s infinite;
+        }
+
+        .status-text {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.5);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        .conversation-box {
+            position: absolute;
+            bottom: 120px;
+            left: 20px;
+            width: 300px;
+            max-height: 200px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.6);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(46, 204, 113, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+        }
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="video-container">
+        <div class="status-text" id="status">Click Microphone to Start Speaking</div>
+        
+        <!-- AI Temsili Avatar -->
+        <div class="ai-avatar" id="aiAvatar"></div>
+
+        <!-- Kullanıcı Kamerası -->
+        <div class="user-camera">
+            <video id="userVideo" autoplay muted></video>
+        </div>
+
+        <!-- Konuşma Geçmişi -->
+        <div class="conversation-box" id="conversation">
+            <p style="color: #aaa;"><i>Conversation history will appear here...</i></p>
+        </div>
+    </div>
+
+    <div class="controls">
+        <!-- Mikrofon Butonu -->
+        <button class="btn btn-mic" id="micBtn" onclick="toggleMic()">
+            🎤
+        </button>
+    </div>
+
+    <script>
+        const micBtn = document.getElementById('micBtn');
+        const statusText = document.getElementById('status');
+        const conversationBox = document.getElementById('conversation');
+        const aiAvatar = document.getElementById('aiAvatar');
+        let isListening = false;
+        let recognition;
+
+        // 1. Kullanıcı Kamerasını Aç
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                document.getElementById('userVideo').srcObject = stream;
+            })
+            .catch(err => console.log("Camera permission denied or error: ", err));
+
+        // 2. Konuşma Algılama (Web Speech API)
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.lang = 'en-US'; // İngilizce konuşma pratiği için
+
+            recognition.onstart = () => {
+                statusText.innerText = "Listening... (Speak English)";
+                micBtn.classList.add('active');
+            };
+
+            recognition.onend = () => {
+                if(isListening) recognition.start(); // Sürekli dinlemesi için
+                else {
+                    statusText.innerText = "Paused. Click Mic to Speak.";
+                    micBtn.classList.remove('active');
+                }
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                addMessage("You: " + transcript);
+                
+                // BURADA YAPAY ZEKA CEVABI DEVREYE GİRECEK
+                // Basit bir simülasyon yapıyoruz:
+                simulateAIResponse(transcript);
+            };
+        } else {
+            alert("Your browser does not support speech recognition. Please use Google Chrome.");
+        }
+
+        function toggleMic() {
+            if (isListening) {
+                isListening = false;
+                recognition.stop();
+                micBtn.style.backgroundColor = "#e74c3c";
+            } else {
+                isListening = true;
+                recognition.start();
+                micBtn.style.backgroundColor = "#2ecc71";
+            }
+        }
+
+        function addMessage(text) {
+            const p = document.createElement('p');
+            p.innerText = text;
+            conversationBox.appendChild(p);
+            conversationBox.scrollTop = conversationBox.scrollHeight;
+        }
+
+        // 3. AI Cevabını Simüle Etme ve Seslendirme
+        function simulateAIResponse(userText) {
+            // Gerçek bir AI (OpenAI) bağlamak için API Key gerekir.
+            // Şimdilik basit kurallarla cevap veriyor:
+            
+            let aiText = "I am listening to you. Keep going!";
+            const lowerText = userText.toLowerCase();
+
+            if(lowerText.includes("hello") || lowerText.includes("hi")) {
+                aiText = "Hello there! How are you feeling today?";
+            } else if (lowerText.includes("name")) {
+                aiText = "I am your personal English assistant, created with love.";
+            } else if (lowerText.includes("love")) {
+                aiText = "Love is a wonderful thing. That is why this platform exists!";
+            } else if (lowerText.includes("learn")) {
+                aiText = "Learning English is fun. Try to describe your day to me.";
+            }
+
+            addMessage("AI: " + aiText);
+            speak(aiText);
+        }
+
+        function speak(text) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            
+            // Avatar konuşurken efekt ver
+            utterance.onstart = () => {
+                aiAvatar.classList.add('ai-speaking');
+            };
+            utterance.onend = () => {
+                aiAvatar.classList.remove('ai-speaking');
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+    </script>
+</body>
+</html>

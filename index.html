@@ -17,6 +17,49 @@
             overflow: hidden;
         }
 
+        /* Giriş Ekranı Stilleri */
+        #loginScreen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .login-box {
+            background: #2c3e50;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.5);
+            width: 80%;
+            max-width: 400px;
+        }
+
+        .login-input {
+            width: 90%;
+            padding: 10px;
+            margin: 15px 0;
+            border-radius: 5px;
+            border: 1px solid #555;
+            background: #1a1a1a;
+            color: white;
+        }
+
+        .login-btn {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Ana Arayüz Stilleri */
         .video-container {
             flex: 1;
             position: relative;
@@ -30,7 +73,6 @@
             width: 200px;
             height: 200px;
             border-radius: 50%;
-            /* Sevgilinin seveceği bir karakterin resmini buraya link olarak koyabilirsin */
             background-image: url('https://img.freepik.com/free-photo/friendly-smiling-woman-looking-camera_23-2148029483.jpg');
             background-size: cover;
             background-position: center;
@@ -38,23 +80,13 @@
             transition: all 0.3s ease;
         }
         
-        .ai-thinking {
-            animation: pulse-blue 1.5s infinite;
-            border: 3px solid #3498db;
-        }
-
-        .ai-speaking {
-            box-shadow: 0 0 80px rgba(100, 255, 150, 0.6);
-            transform: scale(1.1);
-            border: 3px solid #2ecc71;
-        }
+        .ai-thinking { animation: pulse-blue 1.5s infinite; border: 3px solid #3498db; }
+        .ai-speaking { box-shadow: 0 0 80px rgba(100, 255, 150, 0.6); transform: scale(1.1); border: 3px solid #2ecc71; }
 
         .user-camera {
             position: absolute;
-            bottom: 120px;
-            right: 20px;
-            width: 120px;
-            height: 160px;
+            bottom: 120px; right: 20px;
+            width: 120px; height: 160px;
             background-color: #333;
             border-radius: 12px;
             border: 2px solid rgba(255,255,255,0.2);
@@ -62,11 +94,7 @@
             z-index: 10;
         }
         
-        .user-camera video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .user-camera video { width: 100%; height: 100%; object-fit: cover; }
 
         .controls {
             height: 100px;
@@ -79,14 +107,11 @@
         }
 
         .btn {
-            width: 70px;
-            height: 70px;
+            width: 70px; height: 70px;
             border-radius: 50%;
             border: none;
             cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
             font-size: 30px;
             transition: 0.2s;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
@@ -96,57 +121,49 @@
         .btn-mic.active { background-color: #2ecc71; animation: pulse 1.5s infinite; }
 
         .status-text {
-            position: absolute;
-            top: 20px;
-            left: 50%;
+            position: absolute; top: 20px; left: 50%;
             transform: translateX(-50%);
             background: rgba(0,0,0,0.7);
             padding: 10px 20px;
             border-radius: 20px;
-            font-size: 16px;
-            color: #fff;
-            text-align: center;
-            width: 80%;
-            max-width: 600px;
+            font-size: 16px; color: #fff;
+            text-align: center; width: 80%; max-width: 600px;
         }
 
         .conversation-box {
-            position: absolute;
-            bottom: 120px;
-            left: 20px;
-            width: 300px;
-            max-height: 200px;
+            position: absolute; bottom: 120px; left: 20px;
+            width: 300px; max-height: 200px;
             overflow-y: auto;
             background: rgba(0,0,0,0.6);
             padding: 15px;
             border-radius: 10px;
-            font-size: 14px;
-            line-height: 1.5;
+            font-size: 14px; line-height: 1.5;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        @keyframes pulse-blue {
-            0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.7); }
-            70% { box-shadow: 0 0 0 20px rgba(52, 152, 219, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); }
-        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        @keyframes pulse-blue { 0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.7); } 70% { box-shadow: 0 0 0 20px rgba(52, 152, 219, 0); } 100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); } }
     </style>
 </head>
 <body>
 
-    <div class="video-container">
-        <div class="status-text" id="status">Press the Microphone to start talking!</div>
-        
-        <div class="ai-avatar" id="aiAvatar"></div>
+    <!-- Giriş / API Key Ekranı -->
+    <div id="loginScreen">
+        <div class="login-box">
+            <h2>❤️ Welcome My Love</h2>
+            <p>Please enter the secret magic key to start.</p>
+            <input type="password" id="apiKeyInput" class="login-input" placeholder="sk-proj-...">
+            <button class="login-btn" onclick="saveKeyAndStart()">Start Learning</button>
+            <p style="font-size: 12px; color: #aaa; margin-top: 10px;">(Key is saved only on your device)</p>
+        </div>
+    </div>
 
+    <!-- Ana Uygulama -->
+    <div class="video-container">
+        <div class="status-text" id="status">Waiting for magic key...</div>
+        <div class="ai-avatar" id="aiAvatar"></div>
         <div class="user-camera">
             <video id="userVideo" autoplay muted playsinline></video>
         </div>
-
         <div class="conversation-box" id="conversation">
             <p style="color: #aaa;"><i>Chat history...</i></p>
         </div>
@@ -157,86 +174,92 @@
     </div>
 
     <script>
-        // --- AYARLAR ---
-        // DİKKAT: OpenAI API Key'ini buraya tırnak içine yazmalısın.
-        // Örnek: const apiKey = "sk-proj-12345...";
-        const apiKey = "BURAYA_OPENAI_API_KEY_YAZILACAK"; 
-
+        let apiKey = "";
         const micBtn = document.getElementById('micBtn');
         const statusText = document.getElementById('status');
         const conversationBox = document.getElementById('conversation');
         const aiAvatar = document.getElementById('aiAvatar');
+        const loginScreen = document.getElementById('loginScreen');
         
         let recognition;
         let isListening = false;
 
-        // 1. Kamera Başlatma
+        // Sayfa Yüklendiğinde Kayıtlı Key Var mı Bak
+        window.onload = function() {
+            const savedKey = localStorage.getItem("openai_key");
+            if(savedKey && savedKey.startsWith("sk-")) {
+                apiKey = savedKey;
+                loginScreen.style.display = "none";
+                startCamera();
+                initSpeech();
+            }
+        };
+
+        function saveKeyAndStart() {
+            const inputVal = document.getElementById('apiKeyInput').value.trim();
+            if(inputVal.startsWith("sk-")) {
+                apiKey = inputVal;
+                localStorage.setItem("openai_key", apiKey); // Key'i tarayıcıya kaydet
+                loginScreen.style.display = "none";
+                startCamera();
+                initSpeech();
+            } else {
+                alert("Please enter a valid OpenAI key starting with 'sk-'");
+            }
+        }
+
         async function startCamera() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
                 document.getElementById('userVideo').srcObject = stream;
+                statusText.innerText = "Press Microphone to speak!";
             } catch (err) {
-                console.error("Camera Error:", err);
-                statusText.innerText = "Error: Could not access camera. Please allow permissions.";
+                statusText.innerText = "Camera Error: Please allow permissions.";
             }
         }
-        startCamera();
 
-        // 2. Konuşma Algılama (Web Speech API - Chrome Only)
-        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            recognition = new SpeechRecognition();
-            recognition.continuous = false;
-            recognition.lang = 'en-US';
-            recognition.interimResults = false;
+        function initSpeech() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.lang = 'en-US';
+                recognition.interimResults = false;
 
-            recognition.onstart = () => {
-                isListening = true;
-                micBtn.classList.add('active');
-                statusText.innerText = "Listening... (Speak English)";
-            };
+                recognition.onstart = () => {
+                    isListening = true;
+                    micBtn.classList.add('active');
+                    statusText.innerText = "Listening... (Speak English)";
+                };
 
-            recognition.onend = () => {
-                isListening = false;
-                micBtn.classList.remove('active');
-                // Otomatik tekrar başlatmıyoruz, sıra AI'da.
-            };
+                recognition.onend = () => {
+                    isListening = false;
+                    micBtn.classList.remove('active');
+                };
 
-            recognition.onresult = (event) => {
-                const transcript = event.results[0][0].transcript;
-                addMessage("You: " + transcript);
-                askGPT(transcript); // GPT'ye sor
-            };
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    addMessage("You: " + transcript);
+                    askGPT(transcript);
+                };
 
-            recognition.onerror = (event) => {
-                console.error("Speech Error:", event.error);
-                statusText.innerText = "Microphone Error: " + event.error;
-                isListening = false;
-                micBtn.classList.remove('active');
-            };
-        } else {
-            statusText.innerText = "Browser not supported. Please use Google Chrome on Desktop or Android.";
-            micBtn.disabled = true;
-        }
-
-        // Butona tıklayınca dinlemeyi başlat/durdur
-        micBtn.addEventListener('click', () => {
-            if (!recognition) return;
-            if (isListening) {
-                recognition.stop();
+                recognition.onerror = (event) => {
+                    console.error("Speech Error:", event.error);
+                    statusText.innerText = "Error: " + event.error;
+                };
             } else {
-                recognition.start();
+                statusText.innerText = "Browser not supported. Use Chrome.";
             }
+        }
+
+        micBtn.addEventListener('click', () => {
+            if (!apiKey) { alert("Please login first."); return; }
+            if (!recognition) return;
+            if (isListening) recognition.stop();
+            else recognition.start();
         });
 
-        // 3. OpenAI GPT Bağlantısı
         async function askGPT(userText) {
-            if(apiKey === "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" || apiKey === "") {
-                alert("Please enter a valid OpenAI API Key in the code.");
-                speak("Please configure the API key first.");
-                return;
-            }
-
             statusText.innerText = "AI is thinking...";
             aiAvatar.classList.add('ai-thinking');
 
@@ -248,11 +271,11 @@
                         'Authorization': `Bearer ${apiKey}`
                     },
                     body: JSON.stringify({
-                        model: "gpt-4o-mini", // Hızlı ve ucuz model
+                        model: "gpt-4o-mini",
                         messages: [
                             {
                                 role: "system", 
-                                content: "You are a helpful, friendly, and romantic English tutor for my girlfriend. Speak simply, be encouraging, and keep answers short (maximum 2 sentences). Use clear English."
+                                content: "You are a romantic and helpful English tutor. Keep answers short (max 2 sentences). Be encouraging."
                             },
                             { role: "user", content: userText }
                         ]
@@ -261,38 +284,33 @@
 
                 const data = await response.json();
                 
-                if(data.error) {
-                    throw new Error(data.error.message);
-                }
+                if(data.error) throw new Error(data.error.message);
 
                 const aiResponse = data.choices[0].message.content;
-                
                 aiAvatar.classList.remove('ai-thinking');
                 addMessage("AI: " + aiResponse);
                 speak(aiResponse);
 
             } catch (error) {
-                console.error("API Error:", error);
                 aiAvatar.classList.remove('ai-thinking');
-                statusText.innerText = "AI Error: " + error.message;
-                speak("I am having trouble connecting. Please check the API key.");
+                statusText.innerText = "Error. Check API Key.";
+                console.error(error);
+                // Eğer key hatalıysa tekrar giriş ekranını göster
+                if(error.message.includes("Incorrect API key")) {
+                    alert("Invalid API Key. Please enter a new one.");
+                    localStorage.removeItem("openai_key");
+                    location.reload();
+                }
             }
         }
 
-        // 4. Sesli Cevap (Text to Speech)
         function speak(text) {
             statusText.innerText = "AI Speaking...";
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'en-US';
-            
-            // Ses tonu ayarları (Daha doğal olması için)
             utterance.pitch = 1.1;
-            utterance.rate = 0.9;
-
-            utterance.onstart = () => {
-                aiAvatar.classList.add('ai-speaking');
-            };
-
+            
+            utterance.onstart = () => aiAvatar.classList.add('ai-speaking');
             utterance.onend = () => {
                 aiAvatar.classList.remove('ai-speaking');
                 statusText.innerText = "Press Mic to reply.";
